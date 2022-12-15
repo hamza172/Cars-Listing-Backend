@@ -1,8 +1,8 @@
 const express = require("express");
-const mongoose = require("mongoose");
 let bodyParser = require('body-parser');
 const cors = require("cors");
 require("dotenv").config(); 
+
 
 
 const app = express();
@@ -14,14 +14,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log("Database connection Success!");
-  })
-  .catch((err) => {
-    console.error("Mongo Connection Error", err);
-  });
 
 
 const PORT = process.env.PORT || 3000;
@@ -35,6 +27,14 @@ app.use(function (err, req, res, next) {
   });
   
 
+const brandsRoute  = require('./routes/brands');
+
+//setup middle ware for routes
+app.use('/brands', brandsRoute);
+
 app.get("/", (req, res) => { 
 res.status(200).send("Welcome to backend of Cars Listing project"); 
 });
+
+
+app.listen(PORT, () => console.log(`Server Running at port ${PORT}`));
