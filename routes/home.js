@@ -26,7 +26,7 @@ router.get("/electric", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        where fuel = 'Electric'
+        where fuelType = 'Electricity'
         limit 8
     `
     pool.query(query)
@@ -42,7 +42,7 @@ router.get("/hybrid", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        where fuel = 'petrol / electricity'
+        where fuelType = 'petrol / electricity'
         limit 6
     `
     pool.query(query)
