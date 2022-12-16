@@ -5,7 +5,8 @@ const credentials  = {
     port: process.env.PGPORT,
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE
+    database: process.env.PGDATABASE,
+    max: 20
   }
 
 

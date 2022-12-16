@@ -33,7 +33,7 @@ router.put("/set", (req, res, next) => {
             where car_id = $1
         `
         pool.query(query, [car_id])
-        .catch((err) => next(err.stack))
+        .catch((err) => console.log(err))
     }
     res.send("Updated")
     pool.end();
