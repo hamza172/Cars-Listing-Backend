@@ -26,7 +26,7 @@ router.get("/electric", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        where hotcar = 'Electric'
+        where fuel = 'Electric'
         limit 8
     `
     pool.query(query)
@@ -35,6 +35,21 @@ router.get("/electric", (req, res, next) => {
     pool.end();
 });
 
+
+router.get("/hybrid", (req, res, next) => {
+    var lang = req.query.lang;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+        where fuel = 'petrol / electricity'
+        limit 6
+    `
+    pool.query(query)
+    .then((data) => res.json(data.rows))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
 
 
 router.get("/brands", (req, res, next) => {
@@ -67,5 +82,21 @@ router.get("/latest", (req, res, next) => {
     .catch((err) => next(err.stack))
     pool.end();
 });
+
+
+router.get("/cars", (req, res, next) => {
+    var lang = req.query.lang;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+        limit 8
+    `
+    pool.query(query)
+    .then((data) => res.json(data.rows))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
 
 module.exports = router;
