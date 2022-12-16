@@ -29,13 +29,16 @@ app.use(function (err, req, res, next) {
 
 const brandsRoute  = require('./routes/brands');
 const hotCarsRoute  = require('./routes/hotCars');
+const carsRoute  = require('./routes/cars');
 
 
 app.use('/brands', brandsRoute);
 app.use('/hotCars', hotCarsRoute);
+app.use('/cars', carsRoute);
+
 
 app.get("/", (req, res) => { 
-res.status(200).send("Welcome to backend of Cars Listing project"); 
+  res.status(200).send("Welcome to backend of Cars Listing project"); 
 });
 
 
