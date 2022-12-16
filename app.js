@@ -28,9 +28,11 @@ app.use(function (err, req, res, next) {
   
 
 const brandsRoute  = require('./routes/brands');
+const hotCarsRoute  = require('./routes/hotCars');
 
-//setup middle ware for routes
+
 app.use('/brands', brandsRoute);
+app.use('/hotCars', hotCarsRoute);
 
 app.get("/", (req, res) => { 
 res.status(200).send("Welcome to backend of Cars Listing project"); 
