@@ -9,8 +9,10 @@ router.get("/", (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)
     query = `
-        select * from `+lang+`
+        select * from `+lang+` t
+        inner join images i on t.car_id = i.car_id 
         where hotcar = True
+        limit 1
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
