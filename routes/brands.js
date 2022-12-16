@@ -22,7 +22,8 @@ router.get("/cars", (req, res, next) => {
     var brand = req.query.brand;
     var pool = new Pool(credentials)
     query = `
-        select * from `+lang+`
+        select * from `+lang+`t
+        inner join images i on t.car_id = i.car_id 
         where brand = $1
     `
     value = [brand]
