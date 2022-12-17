@@ -31,12 +31,14 @@ const brandsRoute  = require('./routes/brands');
 const hotCarsRoute  = require('./routes/hotCars');
 const carsRoute  = require('./routes/cars');
 const homeRoutes  = require('./routes/home');
+const loginRoutes  = require('./routes/login');
 
 
 app.use('/brands', brandsRoute);
 app.use('/hotCars', hotCarsRoute);
 app.use('/cars', carsRoute);
 app.use('/home', homeRoutes);
+app.use('/login', loginRoutes);
 
 
 app.get("/", (req, res) => { 
