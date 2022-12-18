@@ -4,6 +4,27 @@ const credentials  = require("../util/postgres")
 const { Pool } = require('pg')
 
 
+
+router.get("/key", (req, res, next) => {
+    var lang = req.query.lang;
+    var key = req.query.key;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+        where brand ~* $1
+        or model ~* $1
+        or startofproduction ~* $1
+        or generation ~* $1
+        or  "fuelType" ~* $1;
+    `
+    pool.query(query, [key])
+    .then((data) => res.json(data.rows))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
+
 router.get("/electric", (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)
@@ -12,26 +33,44 @@ router.get("/electric", (req, res, next) => {
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'Electricity'
     `
-    console.log(query)
     pool.query(query)
     .then((data) => res.json(data.rows))
     .catch((err) => next(err.stack))
     pool.end();
 });
 
-router.get("/", (req, res, next) => {
+
+router.get("/hybrid", (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)
     query = `
-        select * from `+lang+` t
-        inner join images i on t.car_id = i.car_id 
-        limit 1
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+        where "fuelType" = 'petrol / electricity'
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
     .catch((err) => next(err.stack))
     pool.end();
 });
+
+
+
+
+router.get("/", (req, res, next) => {
+    var lang = req.query.lang;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+    `
+    pool.query(query)
+    .then((data) => res.json(data.rows))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
+
 
 router.get("/:id", (req, res, next) => {
     var lang = req.query.lang;

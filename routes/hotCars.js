@@ -24,7 +24,7 @@ router.get("/", (req, res, next) => {
 
 
 router.put("/set", auth, (req, res, next) => {
-    var car_id = req.body.car_id;
+    var car_id = req.query.car_id;
     var pool = new Pool(credentials)
     let languages = ['en','fr','es','ru','de','it','gr','tr','ro','fi','se','no','pl']
     for (let i=0;i<languages.length;i++){
@@ -42,7 +42,7 @@ router.put("/set", auth, (req, res, next) => {
 
 
 router.put("/unset", auth, (req, res, next) => {
-    var car_id = req.body.car_id;
+    var car_id = req.query.car_id;
     var pool = new Pool(credentials)
     let languages = ['en','fr','es','ru','de','it','gr','tr','ro','fi','se','no','pl']
     for (let i=0;i<languages.length;i++){
