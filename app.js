@@ -32,6 +32,7 @@ const hotCarsRoute  = require('./routes/hotCars');
 const carsRoute  = require('./routes/cars');
 const homeRoutes  = require('./routes/home');
 const loginRoutes  = require('./routes/login');
+const compareRoutes  = require('./routes/compare');
 
 
 app.use('/brands', brandsRoute);
@@ -39,6 +40,7 @@ app.use('/hotCars', hotCarsRoute);
 app.use('/cars', carsRoute);
 app.use('/home', homeRoutes);
 app.use('/login', loginRoutes);
+app.use('/compare', compareRoutes);
 
 
 app.get("/", (req, res) => { 
