@@ -56,6 +56,7 @@ router.delete("/", auth, (req, res, next) => {
 
 router.get("/", (req, res, next) => {
     var lang = req.query.lang;
+    var flag = true; 
     var pool = new Pool(credentials)
     query = `
         select * from compare c
@@ -76,7 +77,10 @@ router.get("/", (req, res, next) => {
                 data[index].name1 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car1']= result.rows
             })
-            .catch((err) => next(err.stack))
+            .catch((err) => {
+                next(err.stack)
+                flag = false;
+            })
             query = `
             select * , (select image from images i
             where t.car_id = i.car_id limit 1) from `+lang+` t
@@ -88,14 +92,73 @@ router.get("/", (req, res, next) => {
                 data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car2']= result.rows
             })
-            .catch((err) => next(err.stack))
-            res.json(data)
+            .catch((err) => {
+                next(err.stack)
+                flag = false;
+            })
+            if(flag)
+                res.json(data)
             pool.end();
         })
     })
     .catch((err) => next(err.stack))
     pool.end();
 });
+
+
+
+router.get("/:id", (req, res, next) => {
+    var lang = req.query.lang;
+    var id = req.params.id;
+    var pool = new Pool(credentials)
+    query = `
+        select * from compare c
+        where id = $1
+    `
+    pool.query(query, [id])
+    .then((data) => {
+        data = data.rows
+        data.map(async (dat, index)=>{
+            var pool = new Pool(credentials)
+            query = `
+            select * , (select image from images i
+            where t.car_id = i.car_id limit 1) from `+lang+` t
+            where car_id = $1
+            `
+            await pool.query(query, [dat.car1])
+            .then(result=>{
+                item = result.rows[0]
+                data[index].name1 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
+                data[index]['car1']= result.rows
+            })
+            .catch((err) =>  {
+                next(err.stack)
+                flag = false;
+            })
+            query = `
+            select * , (select image from images i
+            where t.car_id = i.car_id limit 1) from `+lang+` t
+            where car_id = $1
+            `
+            await pool.query(query, [dat.car2])
+            .then(result=>{
+                item = result.rows[0]
+                data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
+                data[index]['car2']= result.rows
+            })
+            .catch((err) =>  {
+                next(err.stack)
+                flag = false;
+            })
+            if (flag)
+                res.json(data)
+            pool.end();
+        })
+    })
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
 
 
 module.exports = router;
