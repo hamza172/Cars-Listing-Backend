@@ -76,16 +76,17 @@ router.get("/", (req, res, next) => {
 router.delete("/", (req, res, next) => {
     var car_id = req.query.car_id;
     var pool = new Pool(credentials)
-    query = `
-        DELETE from compare where car_id = $1
-    `
-    value = [car_id]
-    pool.query(query, value)
-    .then(() => res.send("Deleted"))
-    .catch((err) => next(err.stack))
+    let languages = ['en','fr','es','ru','de','it','gr','tr','ro','fi','se','no','pl']
+    for (let i=0;i<languages.length;i++){
+        query = `
+            DELETE from `+languages[i]+` where car_id = $1
+        `
+        pool.query(query, [car_id])
+        .catch((err) => next(err.stack))
+    }
+    res.send("Deleted")
     pool.end();
 });
-
 
 router.get("/:id", (req, res, next) => {
     var lang = req.query.lang;
