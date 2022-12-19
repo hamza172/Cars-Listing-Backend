@@ -61,9 +61,9 @@ router.get("/", (req, res, next) => {
         select * from compare c
     `
     pool.query(query)
-    .then((data) => {
+    .then(async (data) => {
         data = data.rows
-        data.map(async (dat, index)=>{
+        await Promise.all(data.map(async (dat, index)=>{
             var pool = new Pool(credentials)
             query = `
             select * , (select image from images i
@@ -89,13 +89,13 @@ router.get("/", (req, res, next) => {
                 item = result.rows[0]
                 data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car2']= result.rows
-                res.json(data)
             })
             .catch((err) => {
                 next(err.stack)
             })               
             pool.end();
-        })
+        }))
+        res.json(data)
     })
     .catch((err) => next(err.stack))
     pool.end();
@@ -112,9 +112,9 @@ router.get("/:id", (req, res, next) => {
         where id = $1
     `
     pool.query(query, [id])
-    .then((data) => {
+    .then(async (data) => {
         data = data.rows
-        data.map(async (dat, index)=>{
+        await Promise.all(data.map(async (dat, index)=>{
             var pool = new Pool(credentials)
             query = `
             select * , (select image from images i
@@ -139,14 +139,16 @@ router.get("/:id", (req, res, next) => {
             .then(result=>{
                 item = result.rows[0]
                 data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
+                console.log(index, data[index], name)
                 data[index]['car2']= result.rows
-                res.json(data)
+                
             })
             .catch((err) =>  {
                 next(err.stack)
             })
             pool.end();
-        })
+        }))
+        res.send(data)
     })
     .catch((err) => next(err.stack))
     pool.end();
