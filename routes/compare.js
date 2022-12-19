@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const credentials  = require("../util/postgres")
+const auth = require('../middleware/authenticate')
 const { Pool } = require('pg')
 
 
-router.post("/", (req, res, next) => {
+router.post("/", auth, (req, res, next) => {
     var car1 = req.body.car1;
     var car2 = req.body.car2;
     var pool = new Pool(credentials)
@@ -20,8 +21,25 @@ router.post("/", (req, res, next) => {
 });
 
 
+router.put("/", auth, (req, res, next) => {
+    var id = req.body.id;
+    var car1 = req.body.car1;
+    var car2 = req.body.car2;
+    var pool = new Pool(credentials)
+    query = `
+        UPDATE films SET car1 = $1 and car2 = $2
+        WHERE kind = $3;
+    `
+    value = [car1, car2, id]
+    pool.query(query, value)
+    .then(() => res.send("updated"))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
 
-router.delete("/", (req, res, next) => {
+
+
+router.delete("/", auth, (req, res, next) => {
     var id = req.query.id;
     var pool = new Pool(credentials)
     query = `
@@ -33,6 +51,8 @@ router.delete("/", (req, res, next) => {
     .catch((err) => next(err.stack))
     pool.end();
 });
+
+
 
 router.get("/", (req, res, next) => {
     var lang = req.query.lang;
