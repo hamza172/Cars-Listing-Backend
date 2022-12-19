@@ -56,7 +56,6 @@ router.delete("/", auth, (req, res, next) => {
 
 router.get("/", (req, res, next) => {
     var lang = req.query.lang;
-    var flag = true; 
     var pool = new Pool(credentials)
     query = `
         select * from compare c
@@ -79,7 +78,6 @@ router.get("/", (req, res, next) => {
             })
             .catch((err) => {
                 next(err.stack)
-                flag = false;
             })
             query = `
             select * , (select image from images i
@@ -91,13 +89,11 @@ router.get("/", (req, res, next) => {
                 item = result.rows[0]
                 data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car2']= result.rows
+                res.json(data)
             })
             .catch((err) => {
                 next(err.stack)
-                flag = false;
-            })
-            if(flag)
-                res.json(data)
+            })               
             pool.end();
         })
     })
@@ -133,7 +129,6 @@ router.get("/:id", (req, res, next) => {
             })
             .catch((err) =>  {
                 next(err.stack)
-                flag = false;
             })
             query = `
             select * , (select image from images i
@@ -145,13 +140,11 @@ router.get("/:id", (req, res, next) => {
                 item = result.rows[0]
                 data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car2']= result.rows
+                res.json(data)
             })
             .catch((err) =>  {
                 next(err.stack)
-                flag = false;
             })
-            if (flag)
-                res.json(data)
             pool.end();
         })
     })
