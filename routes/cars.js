@@ -40,6 +40,7 @@ router.get("/electric", (req, res, next) => {
 });
 
 
+
 router.get("/hybrid", (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)

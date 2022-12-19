@@ -54,7 +54,7 @@ router.delete("/", auth, (req, res, next) => {
 
 
 
-router.get("/", (req, res, next) => {
+router.get("/", auth, (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)
     query = `
@@ -72,6 +72,8 @@ router.get("/", (req, res, next) => {
             `
             await pool.query(query, [dat.car1])
             .then(result=>{
+                item = result.rows[0]
+                data[index].name1 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car1']= result.rows
             })
             .catch((err) => next(err.stack))
@@ -82,7 +84,8 @@ router.get("/", (req, res, next) => {
             `
             await pool.query(query, [dat.car2])
             .then(result=>{
-                console.log(result)
+                item = result.rows[0]
+                data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car2']= result.rows
             })
             .catch((err) => next(err.stack))
