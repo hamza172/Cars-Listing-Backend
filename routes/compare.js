@@ -54,7 +54,7 @@ router.delete("/", auth, (req, res, next) => {
 
 
 
-router.get("/", auth, (req, res, next) => {
+router.get("/", (req, res, next) => {
     var lang = req.query.lang;
     var pool = new Pool(credentials)
     query = `
