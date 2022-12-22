@@ -16,7 +16,7 @@ app.use(express.json());
 
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 
 app.use(function (err, req, res, next) {
