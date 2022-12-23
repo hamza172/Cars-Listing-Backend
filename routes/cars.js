@@ -88,7 +88,7 @@ router.delete("/", (req, res, next) => {
     pool.end();
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id",(req, res, next) => {
     var lang = req.query.lang;
     var car_id = req.params.id;
     var pool = new Pool(credentials)
@@ -101,18 +101,20 @@ router.get("/:id", (req, res, next) => {
     pool.query(query, value)
     .then((data) => {
         info = data.rows
-    })
-    query = `
-        select image from images
-        where car_id = $1
-    `
-    value = [car_id]
-    pool.query(query, value)
-    .then((data) => {
-        if(info!=undefined){
-            info[0]['images'] = data.rows
-        }
-        res.json(info)
+        var pool = new Pool(credentials)
+        query = `
+            select image from images
+            where car_id = $1
+        `
+        value = [car_id]
+        pool.query(query, value)
+        .then((data) => {
+            if(info!==undefined){
+                info[0]['images'] = data.rows
+            }
+            res.json(info)
+        })
+        pool.end();
     })
     .catch((err) => next(err.stack))
     pool.end();
