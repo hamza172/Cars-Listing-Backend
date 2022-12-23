@@ -100,7 +100,7 @@ router.get("/:id", (req, res, next) => {
     value = [car_id]
     pool.query(query, value)
     .then((data) => {
-        info = data.rows[0]
+        info = data.rows
     })
     query = `
         select image from images
@@ -110,7 +110,7 @@ router.get("/:id", (req, res, next) => {
     pool.query(query, value)
     .then((data) => {
         if(info!=undefined){
-            info['images'] = data.rows
+            info[0]['images'] = data.rows
         }
         res.json(info)
     })
