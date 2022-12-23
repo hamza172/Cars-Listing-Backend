@@ -109,7 +109,9 @@ router.get("/:id", (req, res, next) => {
     value = [car_id]
     pool.query(query, value)
     .then((data) => {
-        info[0]['images'] = data.rows
+        if(info[0]!=undefined){
+            info[0]['images'] = data.rows
+        }
         res.json(info)
     })
     .catch((err) => next(err.stack))
