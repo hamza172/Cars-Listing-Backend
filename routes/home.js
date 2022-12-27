@@ -119,28 +119,31 @@ router.get("/compare", (req, res, next) => {
             where car_id = $1
             `
             await pool.query(query, [dat.car1])
-            .then(result=>{
+            .then(async result=>{
                 item = result.rows[0]
                 data[index].name1 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car1']= result.rows
+                var pool = new Pool(credentials)
+                query = `
+                    select * , (select image from images i
+                    where t.car_id = i.car_id limit 1) from `+lang+` t
+                    where car_id = $1
+                `
+                await pool.query(query, [dat.car2])
+                .then(result=>{
+                    item = result.rows[0]
+                    data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
+                    data[index]['car2']= result.rows
+                })
+                .catch((err) => {
+                    next(err.stack)
+                })   
+                pool.end();      
             })
             .catch((err) => {
                 next(err.stack)
             })
-            query = `
-            select * , (select image from images i
-            where t.car_id = i.car_id limit 1) from `+lang+` t
-            where car_id = $1
-            `
-            await pool.query(query, [dat.car2])
-            .then(result=>{
-                item = result.rows[0]
-                data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
-                data[index]['car2']= result.rows
-            })
-            .catch((err) => {
-                next(err.stack)
-            })               
+                  
             pool.end();
         }))
         res.json(data)
