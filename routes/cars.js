@@ -31,7 +31,8 @@ router.get("/electric", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        where "fuelType" = 'Electricity'
+        where "fuelType" = 'Electricity' or batterycapacity is not null 
+        or electricrange is not null
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
