@@ -120,6 +120,7 @@ router.get("/compare", (req, res, next) => {
             `
             await pool.query(query, [dat.car1])
             .then(async result=>{
+                console.log(result)
                 item = result.rows[0]
                 data[index].name1 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
                 data[index]['car1']= result.rows
