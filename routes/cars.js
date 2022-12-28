@@ -65,6 +65,7 @@ router.get("/", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
+        limit 200
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
