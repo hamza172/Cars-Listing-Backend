@@ -11,6 +11,7 @@ router.get("/hotcars", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where hotcar = True
+        order by t.car_id DESC
         limit 6
     `
     pool.query(query)
@@ -27,6 +28,7 @@ router.get("/electric", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'Electricity'
+        order by t.car_id DESC
         limit 8
     `
     pool.query(query)
@@ -43,6 +45,7 @@ router.get("/hybrid", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'petrol / electricity'
+        order by t.car_id DESC
         limit 6
     `
     pool.query(query)
@@ -90,6 +93,7 @@ router.get("/cars", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
+        order by t.car_id DESC
         limit 8
     `
     pool.query(query)
@@ -117,6 +121,7 @@ router.get("/compare", (req, res, next) => {
             select * , (select image from images i
             where t.car_id = i.car_id limit 1) from `+lang+` t
             where car_id = $1
+            order by t.car_id DESC
             `
             await pool.query(query, [dat.car1])
             .then(async result=>{
@@ -128,6 +133,7 @@ router.get("/compare", (req, res, next) => {
                     select * , (select image from images i
                     where t.car_id = i.car_id limit 1) from `+lang+` t
                     where car_id = $1
+                    order by t.car_id DESC
                 `
                 await pool.query(query, [dat.car2])
                 .then(result=>{

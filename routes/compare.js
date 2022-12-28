@@ -69,6 +69,7 @@ router.get("/", (req, res, next) => {
             select * , (select image from images i
             where t.car_id = i.car_id limit 1) from `+lang+` t
             where car_id = $1
+            order by t.car_id DESC
             `
             await pool.query(query, [dat.car1])
             .then(async result=>{
@@ -80,6 +81,7 @@ router.get("/", (req, res, next) => {
                     select * , (select image from images i
                     where t.car_id = i.car_id limit 1) from `+lang+` t
                     where car_id = $1
+                    order by t.car_id DESC
                 `
                 await pool.query(query, [dat.car2])
                 .then(result=>{
@@ -123,6 +125,7 @@ router.get("/:id", (req, res, next) => {
             select * , (select image from images i
             where t.car_id = i.car_id limit 1) from `+lang+` t
             where car_id = $1
+            order by t.car_id DESC
             `
             await pool.query(query, [dat.car1])
             .then(async result=>{
@@ -134,6 +137,7 @@ router.get("/:id", (req, res, next) => {
                     select * , (select image from images i
                     where t.car_id = i.car_id limit 1) from `+lang+` t
                     where car_id = $1
+                    order by t.car_id DESC
                 `
                 await pool.query(query, [dat.car2])
                 .then(result=>{

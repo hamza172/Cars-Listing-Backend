@@ -26,6 +26,7 @@ router.get("/cars", (req, res, next) => {
         select * from `+lang+`t
         inner join images i on t.car_id = i.car_id 
         where brand = $1
+        order by t.car_id DESC
     `
     value = [brand]
     pool.query(query, value)
@@ -84,6 +85,7 @@ router.get("/specific", (req, res, next) => {
         select *, (select image from images i
             where t.car_id = i.car_id limit 1) from `+lang+` t
         where brand = $1 and model = $2 and generation = $3
+        order by t.car_id DESC
     `
     value = [brand, model, generation]
     pool.query(query, value)

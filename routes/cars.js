@@ -16,7 +16,8 @@ router.get("/key", (req, res, next) => {
         or model ~* $1
         or startofproduction ~* $1
         or generation ~* $1
-        or  "fuelType" ~* $1;
+        or  "fuelType" ~* $1
+        order by t.car_id DESC
     `
     pool.query(query, [key])
     .then((data) => res.json(data.rows))
@@ -33,6 +34,7 @@ router.get("/electric", (req, res, next) => {
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'Electricity' or batterycapacity is not null 
         or electricrange is not null
+        order by t.car_id DESC
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
@@ -49,6 +51,7 @@ router.get("/hybrid", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'petrol / electricity'
+        order by t.car_id DESC
     `
     pool.query(query)
     .then((data) => res.json(data.rows))
@@ -65,6 +68,7 @@ router.get("/", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
+        order by t.car_id DESC
         limit 200
     `
     pool.query(query)
