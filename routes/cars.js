@@ -18,6 +18,24 @@ router.get("/key", (req, res, next) => {
         or generation ~* $1
         or  "fuelType" ~* $1
         order by t.car_id DESC
+        limit 200
+    `
+    pool.query(query, [key])
+    .then((data) => res.json(data.rows))
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
+
+router.get("/year", (req, res, next) => {
+    var lang = req.query.lang;
+    var key = req.query.year;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1) from `+lang+` t
+        where startOfProduction ~* $1
+        limit 500
     `
     pool.query(query, [key])
     .then((data) => res.json(data.rows))
@@ -32,8 +50,7 @@ router.get("/electric", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        where "fuelType" = 'Electricity' or batterycapacity is not null 
-        or electricrange is not null
+        where "fuelType" = 'Electricity'
         order by t.car_id DESC
     `
     pool.query(query)
@@ -93,6 +110,8 @@ router.delete("/", (req, res, next) => {
     res.send("Deleted")
     pool.end();
 });
+
+
 
 router.get("/:id",(req, res, next) => {
     var lang = req.query.lang;

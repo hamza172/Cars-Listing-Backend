@@ -3,6 +3,7 @@ const router = express.Router();
 const credentials  = require("../util/postgres")
 const { Pool } = require('pg');
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 
 
@@ -20,7 +21,7 @@ router.get("/", (req, res, next) => {
         if(data.rows.length!==0){
             const token = jwt.sign(
                 { id: data.rows.id },
-                process.env.JWT_SECRET_KEY,
+                "hamza-hamza-hamza-hamza",
                 {
                   expiresIn: "2h",
                 }
