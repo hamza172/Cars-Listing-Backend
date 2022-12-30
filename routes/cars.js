@@ -45,11 +45,10 @@ router.get("/year", (req, res, next) => {
 
 
 router.get("/yearlist", (req, res, next) => {
-    var lang = req.query.lang;
     var pool = new Pool(credentials)
     query = `
         SELECT DISTINCT  arr[array_upper(arr, 1)]  as year 
-        FROM (SELECT DISTINCT string_to_array(startOfProduction, ', ') AS arr from `+lang+`) AS t
+        FROM (SELECT DISTINCT string_to_array(startOfProduction, ', ') AS arr from en) AS t
         order by year desc
     `
     pool.query(query)
