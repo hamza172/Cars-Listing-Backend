@@ -28,6 +28,7 @@ router.get("/electric", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'Electricity'
+        order by t.car_id DESC
         limit 8
     `
     pool.query(query)
@@ -44,6 +45,7 @@ router.get("/hybrid", (req, res, next) => {
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
         where "fuelType" = 'petrol / electricity'
+        order by t.car_id DESC
         limit 6
     `
     pool.query(query)
@@ -132,9 +134,11 @@ router.get("/compare", (req, res, next) => {
                 `
                 await pool.query(query, [dat.car2])
                 .then(result=>{
-                    item = result.rows[0]
-                    data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
-                    data[index]['car2']= result.rows
+                    if(result.rows.length>0){
+                        item = result.rows[0]
+                        data[index].name2 = item.brand+ ' ' + item.model+ ' ' + item.generation+ ' ' + item.startofproduction
+                        data[index]['car2']= result.rows
+                    }
                 })
                 .catch((err) => {
                     next(err.stack)
