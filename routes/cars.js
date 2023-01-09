@@ -32,28 +32,14 @@ router.get("/year", (req, res, next) => {
     var key = req.query.year;
     var pool = new Pool(credentials)
     query = `
-        select *  from `+lang+` t
-        where startOfProduction ~* $1
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1)  from `+lang+` t
+        where startOfProduction like $1
         limit 500
     `
     pool.query(query, [key])
     .then(async (data) => {
         info = data.rows
-        var pool = new Pool(credentials)
-        await Promise.all(info.map(async (car, i) => {
-            query = `
-                select image from images
-                where car_id = $1
-                limit 1
-            `
-            value = [car.car_id]
-            await pool.query(query, value)
-            .then((data) => {
-                info[i]['images'] = data.rows
-                res.json(info)
-            })
-        }))
-        pool.end();
         res.json(info)   
     })
     .catch((err) => next(err.stack))
