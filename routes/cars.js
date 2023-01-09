@@ -37,23 +37,24 @@ router.get("/year", (req, res, next) => {
         limit 500
     `
     pool.query(query, [key])
-    .then((data) => {
+    .then(async (data) => {
         info = data.rows
         var pool = new Pool(credentials)
-        query = `
-            select image from images
-            where car_id = $1
-            limit 1
-        `
-        value = [car_id]
-        pool.query(query, value)
-        .then((data) => {
-            if(info!==undefined){
-                info[0]['images'] = data.rows
-            }
-            res.json(info)
-        })
+        await Promise.all(info.map(async (car, i) => {
+            query = `
+                select image from images
+                where car_id = $1
+                limit 1
+            `
+            value = [car.car_id]
+            await pool.query(query, value)
+            .then((data) => {
+                info[i]['images'] = data.rows
+                res.json(info)
+            })
+        }))
         pool.end();
+        res.json(info)   
     })
     .catch((err) => next(err.stack))
     pool.end();
