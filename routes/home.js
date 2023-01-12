@@ -77,7 +77,7 @@ router.get("/latest", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
-        order by addedon
+        order by addedon desc
         limit 8
     `
     pool.query(query)
@@ -93,6 +93,7 @@ router.get("/cars", (req, res, next) => {
     query = `
         select * , (select image from images i
         where t.car_id = i.car_id limit 1) from `+lang+` t
+        order by car_id desc
         limit 8
     `
     pool.query(query)

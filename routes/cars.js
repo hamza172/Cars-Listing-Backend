@@ -47,6 +47,27 @@ router.get("/year", (req, res, next) => {
 });
 
 
+
+router.get("/filter", (req, res, next) => {
+    var lang = req.query.lang;
+    var key = req.query.year;
+    var brand = req.query.brand;
+    var pool = new Pool(credentials)
+    query = `
+        select * , (select image from images i
+        where t.car_id = i.car_id limit 1)  from `+lang+` t
+        where brand = $1 and startOfProduction like $2
+        limit 500
+    `
+    pool.query(query, [brand, key ])
+    .then(async (data) => {
+        info = data.rows
+        res.json(info)   
+    })
+    .catch((err) => next(err.stack))
+    pool.end();
+});
+
 router.get("/yearlist", (req, res, next) => {
     var pool = new Pool(credentials)
     query = `
