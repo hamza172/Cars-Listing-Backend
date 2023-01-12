@@ -18,7 +18,7 @@ router.get("/key", (req, res, next) => {
         or generation ~* $1
         or  "fuelType" ~* $1
         order by t.car_id DESC
-        limit 200
+        limit 40
     `
     pool.query(query, [key])
     .then((data) => res.json(data.rows))
